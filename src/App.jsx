@@ -4,11 +4,11 @@ import Header from "./components/Header"
 
 function App() {
   return (
-    <div className="text-lg">
-    <Header/>
-    <Outlet/>
-    <Footer/>
-  </div>
+    <div className="max-w-4xl mx-auto pt-16">
+      <Header />
+      <Outlet />
+      <Footer />
+    </div>
   )
 }
 
