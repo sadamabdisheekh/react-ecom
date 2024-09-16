@@ -1,4 +1,6 @@
+import { ProductDetails } from "../components/ProductDetails";
+
 const Product = () => {
-    return <div>Product</div>
+    return <ProductDetails/>
 }
 export default Product;
