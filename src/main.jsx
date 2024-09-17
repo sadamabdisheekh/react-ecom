@@ -7,6 +7,7 @@ import About from './pages/About.jsx'
 import Products from './pages/Products.jsx'
 import Contact from './pages/Contact.jsx'
 import Product from './pages/Product.jsx'
+import { Cart } from './pages/Cart.jsx'
 
 const routerProvider = createBrowserRouter([
   {
@@ -28,6 +29,10 @@ const routerProvider = createBrowserRouter([
       {
         path: 'product-details/:id',
         element: <Product/>
+      },
+      {
+        path: 'cart',
+        element: <Cart/>
       }
     ]
   }
