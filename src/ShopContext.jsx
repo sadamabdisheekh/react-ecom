@@ -1,11 +1,18 @@
-import { createContext } from 'react';
-import reducer,{initialState} from './shopReducer';
+import { createContext, useContext, useEffect } from 'react';
+import reducer, { initialState } from './shopReducer';
 import { useReducer } from 'react';
 
 export const ShopContext = createContext(initialState);
 
-export const ShopProvider = ({children}) => {
-    const [state,dispatch] = useReducer(reducer,initialState);
+export const ShopProvider = ({ children }) => {
+    const [state, dispatch] = useReducer(reducer, initialState);
+
+    useEffect(() => {
+        localStorage.setItem('cart_items', JSON.stringify({
+            products: state.products,
+            total: state.total
+        }))
+    }, [state])
 
     const addToCart = (product) => {
         const productIndex = state.products.findIndex(p => p.id == product.id);
@@ -16,7 +23,7 @@ export const ShopProvider = ({children}) => {
                 ...updatedProducts[productIndex],
                 quantity: updatedProducts[productIndex].quantity + 1
             }
-        }else {
+        } else {
             updatedProducts = [
                 ...updatedProducts,
                 {
@@ -48,38 +55,38 @@ export const ShopProvider = ({children}) => {
         })
     }
 
-    const updateProductQuantity = (product,newQuantity) => {
+    const updateProductQuantity = (product, newQuantity) => {
         const productIndex = state.products.findIndex(p => p.id == product.id);
-
-        let updatedProducts = [...state];
+        let updatedProducts = [...state.products];
 
         if (newQuantity < 0) {
-            updatedProducts = state.products.filter(p => p.id != product.id);
-        }else {
+            updatedProducts = updatedProducts.filter(p => p.id != product.id);
+        } else {
             updatedProducts[productIndex] = {
-                ...updatedProducts,
+                ...updatedProducts[productIndex],
                 quantity: newQuantity
             }
         }
-        calculateTotalPrice(updateProductQuantity);
+
+        calculateTotalPrice(updatedProducts);
         dispatch({
             type: 'UPDATE_PRODUCT_QUANTITY',
             payload: {
-                product: updatedProducts
+                products: updatedProducts
             }
         })
     }
 
     const removeFromCart = (product) => {
-       const updateProduct = state.products.filter(p => p.id != product.id);
-       calculateTotalPrice(updateProduct);
-       dispatch({
-         type: 'REMOVE_FROM_CART',
-         payload: {
-            products: updateProduct
-         }
-       })
- 
+        const updateProduct = state.products.filter(p => p.id != product.id);
+        calculateTotalPrice(updateProduct);
+        dispatch({
+            type: 'REMOVE_FROM_CART',
+            payload: {
+                products: updateProduct
+            }
+        })
+
     }
     const clearCart = () => {
         dispatch({
@@ -101,3 +108,14 @@ export const ShopProvider = ({children}) => {
         {children}
     </ShopContext.Provider>
 }
+
+const useShop = () => {
+    const context = useContext(ShopContext);
+
+    if (context == undefined) {
+        throw new Error('context must be inside shop context');
+    }
+    return context;
+}
+
+export default useShop;

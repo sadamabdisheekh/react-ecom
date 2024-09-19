@@ -1,10 +1,11 @@
-import React, { useContext } from 'react'
+import React from 'react'
 import { FaTrash } from "react-icons/fa6";
 import { Payments } from './Payments';
-import { ShopContext } from '../ShopContext';
+import useShop from '../ShopContext';
 
 export const CartItems = () => {
-    const {products} = useContext(ShopContext);
+    const { products, updateProductQuantity, removeFromCart } = useShop();
+
     return (
         <div className='flex flex-col lg:flex-row p-4 lg:p-8 space-y-6 lg:space-y-0 lg:space-x-6'>
             <div className='flex-1'>
@@ -12,7 +13,7 @@ export const CartItems = () => {
                     {products.length > 0 ? 'Your cart items' : 'Your cart is empty right now please go a head and add some items'}
                 </h2>
                 {products.map((product) => (
-                    <div className='flex items-start space-x-4 mb-6'>
+                    <div className='flex items-start space-x-4 mb-6' key={product.id}>
                         <img className='w-24 h-24 object-cover rounded-lg' src={product.thumbnail} alt={product.title} />
                         {/* {product info} */}
                         <div className='flex flex-col justify-between flex-1'>
@@ -25,11 +26,11 @@ export const CartItems = () => {
                                     </span>
                                     <div className='flex items-center space-x-2'>
                                         <label htmlFor="" className='text-sm font-semibold'>Quantity</label>
-                                        <input type="number" className='w-16 border border-gray-400 rounded-md p-1 text-center' />
+                                        <input type="number" onChange={(event) => updateProductQuantity(product, event.target.value)} defaultValue={product.quantity} min={1} className='w-16 border border-gray-400 rounded-md p-1 text-center' />
                                     </div>
                                 </div>
-                                <button className='text-red-500 hover:text-red-700 transition-colors duration-200 ease-in-out'>
-                                <FaTrash  className='w-4 h-5'/>
+                                <button onClick={() => removeFromCart(product)} className='text-red-500 hover:text-red-700 transition-colors duration-200 ease-in-out'>
+                                    <FaTrash className='w-4 h-5' />
                                 </button>
                             </div>
                         </div>
@@ -37,7 +38,7 @@ export const CartItems = () => {
 
                 ))}
             </div>
-            <Payments/>
+            <Payments />
             <div>
             </div>
         </div>

@@ -16,6 +16,10 @@ const routerProvider = createBrowserRouter([
     element: <App />,
     children: [
       {
+        index: true,
+        element: <Products />
+      },
+      {
         path: '/products',
         element: <Products />
       },
@@ -29,11 +33,11 @@ const routerProvider = createBrowserRouter([
       },
       {
         path: 'product-details/:id',
-        element: <Product/>
+        element: <Product />
       },
       {
         path: 'cart',
-        element: <Cart/>
+        element: <Cart />
       }
     ]
   }
